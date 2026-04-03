@@ -2,7 +2,7 @@ import { Pencil, Trash2, ReceiptText } from 'lucide-react';
 import useStore from '../../store/useStore';
 import { formatCurrency, formatDate, CATEGORY_COLORS } from '../../utils/helpers';
 
-\
+
 
 function CategoryBadge({ category }) {
     const color = CATEGORY_COLORS[category] ?? '#94a3b8';
