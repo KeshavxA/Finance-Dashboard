@@ -1,12 +1,12 @@
 import { Search, RotateCcw } from 'lucide-react';
 import useStore from '../../store/useStore';
-import { CATEGORIES } from '../../utils/helpers';
+import { CATEGORIES, TRANSLATIONS } from '../../utils/helpers';
 
 const SORT_OPTIONS = [
-    { value: 'date-desc', label: 'Newest First' },
-    { value: 'date-asc', label: 'Oldest First' },
-    { value: 'amount-desc', label: 'Highest Amount' },
-    { value: 'amount-asc', label: 'Lowest Amount' },
+    { value: 'date-desc', labelKey: 'newest' },
+    { value: 'date-asc', labelKey: 'oldest' },
+    { value: 'amount-desc', labelKey: 'highest' },
+    { value: 'amount-asc', labelKey: 'lowest' },
 ];
 
 const selectClass = `
@@ -22,12 +22,14 @@ export default function TransactionFilters() {
     const filters = useStore((s) => s.filters);
     const setFilters = useStore((s) => s.setFilters);
     const resetFilters = useStore((s) => s.resetFilters);
+    const language = useStore((s) => s.language);
+
+    const T = TRANSLATIONS[language] || TRANSLATIONS.en;
 
     return (
         <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-4 shadow-sm">
             <div className="flex flex-wrap gap-3 items-end">
 
-                {/* ── Search ─────────────────────────────────────────────────────── */}
                 <div className="relative flex-1 min-w-[180px]">
                     <Search
                         size={15}
@@ -35,7 +37,7 @@ export default function TransactionFilters() {
                     />
                     <input
                         type="text"
-                        placeholder="Search transactions…"
+                        placeholder={T.search}
                         value={filters.search}
                         onChange={(e) => setFilters({ search: e.target.value })}
                         className="
@@ -49,50 +51,33 @@ export default function TransactionFilters() {
                     />
                 </div>
 
-                {/* ── Category ───────────────────────────────────────────────────── */}
-                <div className="relative min-w-[150px]">
-                    <select
-                        value={filters.category}
-                        onChange={(e) => setFilters({ category: e.target.value })}
-                        className={selectClass}
-                    >
-                        <option value="All">All Categories</option>
-                        {CATEGORIES.map((c) => (
-                            <option key={c} value={c}>{c}</option>
-                        ))}
-                    </select>
-                    <ChevronIcon />
-                </div>
-
-                {/* ── Type ───────────────────────────────────────────────────────── */}
-                <div className="relative min-w-[130px]">
-                    <select
-                        value={filters.type}
-                        onChange={(e) => setFilters({ type: e.target.value })}
-                        className={selectClass}
-                    >
-                        <option value="All">All Types</option>
-                        <option value="income">Income</option>
-                        <option value="expense">Expense</option>
-                    </select>
-                    <ChevronIcon />
-                </div>
-
-                {/* ── Sort ───────────────────────────────────────────────────────── */}
                 <div className="relative min-w-[155px]">
                     <select
                         value={filters.sortBy}
                         onChange={(e) => setFilters({ sortBy: e.target.value })}
                         className={selectClass}
                     >
-                        {SORT_OPTIONS.map(({ value, label }) => (
-                            <option key={value} value={value}>{label}</option>
-                        ))}
+                        <option value="date-desc">Newest First</option>
+                        <option value="date-asc">Oldest First</option>
+                        <option value="amount-desc">Highest Amount</option>
+                        <option value="amount-asc">Lowest Amount</option>
                     </select>
                     <ChevronIcon />
                 </div>
 
-                {/* ── Reset ──────────────────────────────────────────────────────── */}
+                <div className="relative min-w-[160px]">
+                    <select
+                        value={filters.groupBy || 'none'}
+                        onChange={(e) => setFilters({ groupBy: e.target.value })}
+                        className={selectClass}
+                    >
+                        <option value="none">{T.groupBy}: {T.none}</option>
+                        <option value="date">{T.groupBy}: {T.date}</option>
+                        <option value="category">{T.groupBy}: {T.category}</option>
+                    </select>
+                    <ChevronIcon />
+                </div>
+
                 <button
                     onClick={resetFilters}
                     className="

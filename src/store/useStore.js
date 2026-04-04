@@ -7,6 +7,7 @@ const DEFAULT_FILTERS = {
     category: 'All',
     type: 'All',
     sortBy: 'date-desc',
+    groupBy: 'none',
 };
 
 const useStore = create(
