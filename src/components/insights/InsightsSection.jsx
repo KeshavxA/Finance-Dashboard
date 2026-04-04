@@ -39,7 +39,6 @@ function CustomTooltip({ active, payload, label }) {
 
 export default function InsightsSection({ transactions }) {
     const { topCategory, avgDailyExpense, savingsRate, monthlyData } = useMemo(() => {
-
         const categoryTotals = {};
         transactions
             .filter((t) => t.type === 'expense')
@@ -93,9 +92,20 @@ export default function InsightsSection({ transactions }) {
         ? 'text-green-600 dark:text-green-400'
         : 'text-red-600 dark:text-red-400';
 
+    if (transactions.length === 0) {
+        return (
+            <div className="flex flex-col items-center justify-center py-24 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl gap-4">
+                <PiggyBank size={48} className="text-gray-200 dark:text-gray-700" />
+                <div className="text-center">
+                    <p className="text-lg font-semibold text-gray-900 dark:text-white">Start your journey!</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Add some transactions to see deep insights.</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-6">
-
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <InsightCard
                     icon={ShoppingBag}
@@ -123,8 +133,8 @@ export default function InsightsSection({ transactions }) {
                     Monthly Income vs Expenses
                 </h2>
                 <ResponsiveContainer width="100%" height={260}>
-                    <BarChart data={monthlyData} barCategoryGap="30%" barGap={4} margin={{ top: 4, right: 8, bottom: 0, left: 8 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-gray-100 dark:text-gray-800" />
+                    <BarChart data={monthlyData} barCategoryGap="25%" barGap={8} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-gray-100 dark:text-gray-800/60" />
                         <XAxis
                             dataKey="name"
                             tick={{ fontSize: 12, fill: 'currentColor' }}
@@ -140,9 +150,9 @@ export default function InsightsSection({ transactions }) {
                             axisLine={false}
                             width={52}
                         />
-                        <Tooltip content={<CustomTooltip />} />
+                        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'currentColor', opacity: 0.05 }} />
                         <Legend
-                            wrapperStyle={{ fontSize: '12px', paddingTop: '12px' }}
+                            wrapperStyle={{ fontSize: '12px', paddingTop: '20px' }}
                             formatter={(value) => (
                                 <span className="text-gray-600 dark:text-gray-400">{value}</span>
                             )}

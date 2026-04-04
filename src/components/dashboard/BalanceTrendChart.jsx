@@ -23,17 +23,14 @@ export default function BalanceTrendChart({ transactions }) {
         const today = new Date(2026, 3, 2);
         const dayMap = {};
 
-        // Index transactions by date
         transactions.forEach((t) => {
             if (!dayMap[t.date]) dayMap[t.date] = { income: 0, expense: 0 };
             if (t.type === 'income') dayMap[t.date].income += t.amount;
             if (t.type === 'expense') dayMap[t.date].expense += t.amount;
         });
 
-        // Build last-30-days series with running balance
         let runningBalance = 0;
 
-        // Seed with all transactions before our window
         transactions.forEach((t) => {
             const d = parseISO(t.date);
             if (d < subDays(today, DAYS - 1)) {
@@ -64,7 +61,7 @@ export default function BalanceTrendChart({ transactions }) {
             </h2>
             <ResponsiveContainer width="100%" height={220}>
                 <LineChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 8 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-gray-100 dark:text-gray-800" />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-gray-100 dark:text-gray-800/60" />
                     <XAxis
                         dataKey="date"
                         tick={{ fontSize: 11, fill: 'currentColor' }}

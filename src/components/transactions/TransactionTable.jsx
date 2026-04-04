@@ -80,7 +80,7 @@ export default function TransactionTable({ transactions, onEdit }) {
                                 return (
                                     <tr
                                         key={tx.id}
-                                        className="hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors"
+                                        className="hover:bg-gray-50/80 dark:hover:bg-gray-800/60 transition-all duration-200 group"
                                     >
                                         <td className="px-5 py-3.5 whitespace-nowrap text-gray-500 dark:text-gray-400 text-xs">
                                             {formatDate(tx.date)}

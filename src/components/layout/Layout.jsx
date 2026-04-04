@@ -11,10 +11,12 @@ export default function Layout({ children }) {
 
                 <Sidebar />
 
-                <div className="flex flex-col flex-1 min-w-0">
+                <div className="flex flex-col flex-1 min-w-0 h-full overflow-hidden">
                     <Header />
-                    <main className="flex-1 overflow-y-auto p-4 md:p-6">
-                        {children}
+                    <main className="flex-1 overflow-y-auto p-4 md:p-6 custom-scrollbar">
+                        <div className="max-w-7xl mx-auto w-full">
+                            {children}
+                        </div>
                     </main>
                 </div>
             </div>

@@ -3,8 +3,12 @@ import { formatCurrency } from '../../utils/helpers';
 
 function Card({ label, value, icon: Icon, colorClass, bgClass }) {
     return (
-        <div className={`flex items-center gap-4 rounded-2xl p-5 shadow-sm border ${bgClass}`}>
-            <div className={`p-3 rounded-xl ${colorClass}`}>
+        <div className={`
+            flex items-center gap-4 rounded-2xl p-5 shadow-sm border 
+            transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 group
+            ${bgClass}
+        `}>
+            <div className={`p-3 rounded-xl shrink-0 transition-transform duration-300 group-hover:scale-110 ${colorClass}`}>
                 <Icon size={22} strokeWidth={2} className="text-white" />
             </div>
             <div className="min-w-0">
