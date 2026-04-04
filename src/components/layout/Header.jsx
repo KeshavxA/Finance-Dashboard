@@ -6,12 +6,13 @@ import {
 } from 'lucide-react';
 import useStore from '../../store/useStore';
 import { TRANSLATIONS } from '../../utils/helpers';
-import logo from '../../assets/logo.png';
+import logoLight from '../../assets/logo-light.png';
+import logoDark from '../../assets/logo-dark.png';
 
 const NAV_ITEMS = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'transactions', label: 'Transactions', icon: ArrowLeftRight },
-    { id: 'insights', icon: Lightbulb },
+    { id: 'insights', label: 'Insights', icon: Lightbulb },
 ];
 
 const LANGUAGES = [
@@ -94,7 +95,11 @@ export default function Header() {
 
             <header className="md:hidden flex flex-col px-4 py-4 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shrink-0 gap-4">
                 <div className="flex items-center justify-between">
-                    <img src={logo} alt="Zorvyn Logo" className="h-14 w-auto object-contain" />
+                    <img
+                        src={darkMode ? logoDark : logoLight}
+                        alt="Zorvyn Logo"
+                        className="h-14 w-auto object-contain transition-opacity duration-300"
+                    />
                     <button
                         onClick={toggleDarkMode}
                         className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors shrink-0"

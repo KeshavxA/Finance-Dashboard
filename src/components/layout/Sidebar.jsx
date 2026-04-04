@@ -1,7 +1,8 @@
 import { LayoutDashboard, ArrowLeftRight, Lightbulb } from 'lucide-react';
 import useStore from '../../store/useStore';
 import { TRANSLATIONS } from '../../utils/helpers';
-import logo from '../../assets/logo.png';
+import logoLight from '../../assets/logo-light.png';
+import logoDark from '../../assets/logo-dark.png';
 
 const NAV_ITEMS = [
     { id: 'dashboard', icon: LayoutDashboard },
@@ -13,6 +14,7 @@ export default function Sidebar() {
     const activePage = useStore((s) => s.activePage);
     const setActivePage = useStore((s) => s.setActivePage);
     const language = useStore((s) => s.language);
+    const darkMode = useStore((s) => s.darkMode);
 
     const T = TRANSLATIONS[language] || TRANSLATIONS.en;
 
@@ -20,7 +22,11 @@ export default function Sidebar() {
         <aside className="hidden md:flex flex-col w-64 shrink-0 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 shadow-sm transition-colors duration-300">
 
             <div className="flex flex-col items-center justify-center px-8 py-10 border-b border-gray-100 dark:border-gray-800">
-                <img src={logo} alt="Zorvyn Logo" className="h-20 w-auto object-contain" />
+                <img
+                    src={darkMode ? logoDark : logoLight}
+                    alt="Zorvyn Logo"
+                    className="h-20 w-auto object-contain transition-opacity duration-300"
+                />
             </div>
 
             <nav className="flex flex-col gap-1 px-4 py-6 flex-1">
