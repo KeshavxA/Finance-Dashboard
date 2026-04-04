@@ -39,7 +39,7 @@ export default function SummaryCards({ transactions }) {
             label: T.balance,
             value: formatCurrency(balance),
             icon: Wallet,
-            colorClass: 'bg-indigo-500',
+            colorClass: 'bg-teal-600',
             bgClass: 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800',
         },
         {

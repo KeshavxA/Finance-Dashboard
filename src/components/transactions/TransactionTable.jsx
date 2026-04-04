@@ -83,7 +83,7 @@ export default function TransactionTable({ transactions, onEdit }) {
                         <div className="flex items-center justify-center gap-2">
                             <button
                                 onClick={() => onEdit(tx)}
-                                className="p-1.5 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 dark:hover:text-indigo-400 transition-colors"
+                                className="p-1.5 rounded-lg text-gray-400 hover:text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-950 dark:hover:text-teal-400 transition-colors"
                             >
                                 <Pencil size={14} />
                             </button>
@@ -120,7 +120,7 @@ export default function TransactionTable({ transactions, onEdit }) {
                 <tr className="bg-gray-100/60 dark:bg-gray-800/80">
                     <td
                         colSpan={isAdmin ? 6 : 5}
-                        className="px-5 py-2 text-[10px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 text-left border-y border-gray-100 dark:border-gray-800"
+                        className="px-5 py-2 text-[10px] font-bold uppercase tracking-widest text-teal-600 dark:text-teal-400 text-left border-y border-gray-100 dark:border-gray-800"
                     >
                         {groupName} <span className="opacity-40">•</span> {items.length} {items.length === 1 ? T.item : T.items}
                     </td>

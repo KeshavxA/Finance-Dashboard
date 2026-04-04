@@ -6,11 +6,12 @@ import {
 } from 'lucide-react';
 import useStore from '../../store/useStore';
 import { TRANSLATIONS } from '../../utils/helpers';
+import logo from '../../assets/logo.png';
 
 const NAV_ITEMS = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'transactions', label: 'Transactions', icon: ArrowLeftRight },
-    { id: 'insights', label: 'Insights', icon: Lightbulb },
+    { id: 'insights', icon: Lightbulb },
 ];
 
 const LANGUAGES = [
@@ -52,24 +53,24 @@ export default function Header() {
 
     return (
         <>
-            <header className="hidden md:flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm shrink-0">
-                <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
+            <header className="hidden md:flex items-center justify-between px-8 py-6 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm shrink-0">
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
                     {T[activePage]}
                 </h1>
 
-                <div className="flex items-center gap-3">
-                    <div className="relative flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-lg px-3 py-1.5">
+                <div className="flex items-center gap-4">
+                    <div className="relative flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-xl px-4 py-2 border border-gray-100 dark:border-gray-700 shadow-xs">
                         {role === 'viewer'
-                            ? <Eye size={15} className="text-gray-500 dark:text-gray-400" />
-                            : <Shield size={15} className="text-indigo-500" />
+                            ? <Eye size={16} className="text-gray-500 dark:text-gray-400" />
+                            : <Shield size={16} className="text-teal-600" />
                         }
                         <select
                             value={role}
                             onChange={(e) => setRole(e.target.value)}
-                            className="bg-transparent text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer outline-none appearance-none pr-1"
+                            className="bg-transparent text-sm font-bold text-gray-700 dark:text-gray-300 cursor-pointer outline-none appearance-none pr-1"
                         >
-                            <option value="viewer" className="dark:bg-gray-900">Viewer</option>
-                            <option value="admin" className="dark:bg-gray-900">Admin</option>
+                            <option value="viewer" className="dark:bg-gray-900 font-medium text-base">Viewer</option>
+                            <option value="admin" className="dark:bg-gray-900 font-medium text-base">Admin</option>
                         </select>
                     </div>
 
@@ -80,7 +81,23 @@ export default function Header() {
 
                     <button
                         onClick={toggleDarkMode}
-                        className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                        className="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200 border border-gray-100 dark:border-gray-700 shadow-sm"
+                        aria-label="Toggle dark mode"
+                    >
+                        {darkMode
+                            ? <Sun size={19} className="text-yellow-400" />
+                            : <Moon size={19} className="text-gray-500" />
+                        }
+                    </button>
+                </div>
+            </header>
+
+            <header className="md:hidden flex flex-col px-4 py-4 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shrink-0 gap-4">
+                <div className="flex items-center justify-between">
+                    <img src={logo} alt="Zorvyn Logo" className="h-14 w-auto object-contain" />
+                    <button
+                        onClick={toggleDarkMode}
+                        className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors shrink-0"
                         aria-label="Toggle dark mode"
                     >
                         {darkMode
@@ -89,21 +106,13 @@ export default function Header() {
                         }
                     </button>
                 </div>
-            </header>
 
-            <header className="md:hidden flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shrink-0">
-                <div className="flex items-center gap-2 shrink-0">
-                    <div className="w-7 h-7 rounded-md bg-indigo-600 flex items-center justify-center">
-                        <span className="text-white font-bold text-xs">F</span>
-                    </div>
-                </div>
-
-                <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar-hide">
-                    <div className="relative flex items-center gap-1.5 bg-gray-100 dark:bg-gray-800 rounded-lg px-2.5 py-1.5">
+                <div className="flex items-center gap-3 overflow-x-auto custom-scrollbar-hide pb-1">
+                    <div className="relative flex items-center gap-1.5 bg-gray-100 dark:bg-gray-800 rounded-lg px-3 py-2 shrink-0 border border-gray-100 dark:border-gray-700 shadow-xs">
                         <select
                             value={role}
                             onChange={(e) => setRole(e.target.value)}
-                            className="bg-transparent text-xs font-medium text-gray-700 dark:text-gray-300 cursor-pointer outline-none appearance-none"
+                            className="bg-transparent text-xs font-bold text-gray-700 dark:text-gray-300 cursor-pointer outline-none appearance-none"
                         >
                             <option value="viewer" className="dark:bg-gray-900">Viewer</option>
                             <option value="admin" className="dark:bg-gray-900">Admin</option>
@@ -113,23 +122,12 @@ export default function Header() {
                     <LanguageSwitcher
                         language={language}
                         setLanguage={setLanguage}
-                        className="!gap-1 !px-2"
+                        className="!gap-1.5 !px-3 !py-2 shrink-0 border border-gray-100 dark:border-gray-700 shadow-xs"
                     />
-
-                    <button
-                        onClick={toggleDarkMode}
-                        className="p-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors shrink-0"
-                        aria-label="Toggle dark mode"
-                    >
-                        {darkMode
-                            ? <Sun size={15} className="text-yellow-400" />
-                            : <Moon size={15} className="text-gray-500" />
-                        }
-                    </button>
                 </div>
             </header>
 
-            <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 shadow-lg">
+            <nav className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-gray-200 dark:border-gray-800 shadow-2xl rounded-2xl w-[90%] max-w-sm overflow-hidden p-1.5">
                 {NAV_ITEMS.map(({ id, label, icon: Icon }) => {
                     const isActive = activePage === id;
                     return (
@@ -137,11 +135,11 @@ export default function Header() {
                             key={id}
                             onClick={() => useStore.getState().setActivePage(id)}
                             className={`
-                                flex flex-col items-center justify-center flex-1 py-2.5 gap-1 text-xs font-medium
-                                transition-colors duration-150
+                                flex flex-col items-center justify-center flex-1 py-3 rounded-xl gap-1 text-[10px] font-bold uppercase tracking-wider
+                                transition-all duration-200
                                 ${isActive
-                                    ? 'text-indigo-600 dark:text-indigo-400'
-                                    : 'text-gray-400 dark:text-gray-500'
+                                    ? 'bg-teal-600 text-white shadow-lg shadow-teal-500/20'
+                                    : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'
                                 }
                             `}
                         >

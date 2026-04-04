@@ -110,7 +110,7 @@ export default function App() {
                   </button>
                   <button
                     onClick={openAdd}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium transition-colors"
                   >
                     <Plus size={15} />
                     {T.add}

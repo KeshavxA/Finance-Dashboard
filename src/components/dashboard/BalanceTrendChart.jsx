@@ -11,7 +11,7 @@ function CustomTooltip({ active, payload, label }) {
     return (
         <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 shadow-lg text-sm">
             <p className="font-medium text-gray-500 dark:text-gray-400 mb-0.5">{label}</p>
-            <p className="font-bold text-indigo-600 dark:text-indigo-400">
+            <p className="font-bold text-teal-600 dark:text-teal-400">
                 ₹{(payload[0].value / 1000).toFixed(1)}k
             </p>
         </div>
@@ -56,7 +56,7 @@ export default function BalanceTrendChart({ transactions }) {
 
     return (
         <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 shadow-sm">
-            <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">
+            <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 uppercase tracking-wider text-[10px]">
                 Balance Trend (Last 30 Days)
             </h2>
             <ResponsiveContainer width="100%" height={220}>
@@ -82,10 +82,10 @@ export default function BalanceTrendChart({ transactions }) {
                     <Line
                         type="monotone"
                         dataKey="balance"
-                        stroke="#6366f1"
+                        stroke="#0d9488"
                         strokeWidth={2.5}
                         dot={false}
-                        activeDot={{ r: 5, fill: '#6366f1', strokeWidth: 0 }}
+                        activeDot={{ r: 5, fill: '#0d9488', strokeWidth: 0 }}
                     />
                 </LineChart>
             </ResponsiveContainer>
