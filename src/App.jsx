@@ -10,12 +10,16 @@ import AddTransactionModal from './components/transactions/AddTransactionModal';
 import InsightsSection from './components/insights/InsightsSection';
 import { Plus, Download } from 'lucide-react';
 import Papa from 'papaparse';
+import { TRANSLATIONS } from './utils/helpers';
 
 export default function App() {
   const activePage = useStore((s) => s.activePage);
   const transactions = useStore((s) => s.transactions);
   const filters = useStore((s) => s.filters);
   const role = useStore((s) => s.role);
+  const language = useStore((s) => s.language);
+
+  const T = TRANSLATIONS[language] || TRANSLATIONS.en;
 
   const [showModal, setShowModal] = useState(false);
   const [editTx, setEditTx] = useState(null);
@@ -102,14 +106,14 @@ export default function App() {
                     className="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium transition-colors"
                   >
                     <Download size={15} />
-                    Export
+                    {T.export}
                   </button>
                   <button
                     onClick={openAdd}
                     className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors"
                   >
                     <Plus size={15} />
-                    Add Transaction
+                    {T.add}
                   </button>
                 </div>
               )}

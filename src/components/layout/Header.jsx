@@ -2,8 +2,10 @@ import {
     Sun, Moon,
     Eye, Shield,
     LayoutDashboard, ArrowLeftRight, Lightbulb,
+    Languages,
 } from 'lucide-react';
 import useStore from '../../store/useStore';
+import { TRANSLATIONS } from '../../utils/helpers';
 
 const NAV_ITEMS = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -11,30 +13,51 @@ const NAV_ITEMS = [
     { id: 'insights', label: 'Insights', icon: Lightbulb },
 ];
 
-const PAGE_TITLES = {
-    dashboard: 'Dashboard',
-    transactions: 'Transactions',
-    insights: 'Insights',
-};
+const LANGUAGES = [
+    { id: 'en', label: 'English', flag: '🇺🇸' },
+    { id: 'hi', label: 'Hindi', flag: '🇮🇳' },
+    { id: 'es', label: 'Spanish', flag: '🇪🇸' },
+    { id: 'nl', label: 'Dutch', flag: '🇳🇱' },
+];
+
+function LanguageSwitcher({ language, setLanguage, className = "" }) {
+    return (
+        <div className={`relative flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-lg px-2.5 py-1.5 ${className}`}>
+            <Languages size={15} className="text-gray-500 dark:text-gray-400" />
+            <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                className="bg-transparent text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer outline-none appearance-none pr-1 focus:ring-0 border-none"
+            >
+                {LANGUAGES.map((l) => (
+                    <option key={l.id} value={l.id} className="dark:bg-gray-900">
+                        {l.flag} {l.label}
+                    </option>
+                ))}
+            </select>
+        </div>
+    );
+}
 
 export default function Header() {
     const activePage = useStore((s) => s.activePage);
-    const setActivePage = useStore((s) => s.setActivePage);
     const role = useStore((s) => s.role);
     const setRole = useStore((s) => s.setRole);
     const darkMode = useStore((s) => s.darkMode);
     const toggleDarkMode = useStore((s) => s.toggleDarkMode);
+    const language = useStore((s) => s.language);
+    const setLanguage = useStore((s) => s.setLanguage);
+
+    const T = TRANSLATIONS[language] || TRANSLATIONS.en;
 
     return (
         <>
             <header className="hidden md:flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm shrink-0">
-
                 <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    {PAGE_TITLES[activePage]}
+                    {T[activePage]}
                 </h1>
 
                 <div className="flex items-center gap-3">
-
                     <div className="relative flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-lg px-3 py-1.5">
                         {role === 'viewer'
                             ? <Eye size={15} className="text-gray-500 dark:text-gray-400" />
@@ -43,12 +66,17 @@ export default function Header() {
                         <select
                             value={role}
                             onChange={(e) => setRole(e.target.value)}
-                            className="bg-transparent text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer outline-none pr-1"
+                            className="bg-transparent text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer outline-none appearance-none pr-1"
                         >
-                            <option value="viewer">Viewer</option>
-                            <option value="admin">Admin</option>
+                            <option value="viewer" className="dark:bg-gray-900">Viewer</option>
+                            <option value="admin" className="dark:bg-gray-900">Admin</option>
                         </select>
                     </div>
+
+                    <LanguageSwitcher
+                        language={language}
+                        setLanguage={setLanguage}
+                    />
 
                     <button
                         onClick={toggleDarkMode}
@@ -64,33 +92,33 @@ export default function Header() {
             </header>
 
             <header className="md:hidden flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shrink-0">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0">
                     <div className="w-7 h-7 rounded-md bg-indigo-600 flex items-center justify-center">
                         <span className="text-white font-bold text-xs">F</span>
                     </div>
-                    <span className="font-bold text-gray-900 dark:text-white">FinTrack</span>
                 </div>
 
-                <div className="flex items-center gap-2">
-
+                <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar-hide">
                     <div className="relative flex items-center gap-1.5 bg-gray-100 dark:bg-gray-800 rounded-lg px-2.5 py-1.5">
-                        {role === 'viewer'
-                            ? <Eye size={13} className="text-gray-500 dark:text-gray-400" />
-                            : <Shield size={13} className="text-indigo-500" />
-                        }
                         <select
                             value={role}
                             onChange={(e) => setRole(e.target.value)}
-                            className="bg-transparent text-xs font-medium text-gray-700 dark:text-gray-300 cursor-pointer outline-none"
+                            className="bg-transparent text-xs font-medium text-gray-700 dark:text-gray-300 cursor-pointer outline-none appearance-none"
                         >
-                            <option value="viewer">Viewer</option>
-                            <option value="admin">Admin</option>
+                            <option value="viewer" className="dark:bg-gray-900">Viewer</option>
+                            <option value="admin" className="dark:bg-gray-900">Admin</option>
                         </select>
                     </div>
 
+                    <LanguageSwitcher
+                        language={language}
+                        setLanguage={setLanguage}
+                        className="!gap-1 !px-2"
+                    />
+
                     <button
                         onClick={toggleDarkMode}
-                        className="p-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                        className="p-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors shrink-0"
                         aria-label="Toggle dark mode"
                     >
                         {darkMode
@@ -107,18 +135,18 @@ export default function Header() {
                     return (
                         <button
                             key={id}
-                            onClick={() => setActivePage(id)}
+                            onClick={() => useStore.getState().setActivePage(id)}
                             className={`
-                flex flex-col items-center justify-center flex-1 py-2.5 gap-1 text-xs font-medium
-                transition-colors duration-150
-                ${isActive
+                                flex flex-col items-center justify-center flex-1 py-2.5 gap-1 text-xs font-medium
+                                transition-colors duration-150
+                                ${isActive
                                     ? 'text-indigo-600 dark:text-indigo-400'
                                     : 'text-gray-400 dark:text-gray-500'
                                 }
-              `}
+                            `}
                         >
                             <Icon size={20} />
-                            <span>{label}</span>
+                            <span>{T[id]}</span>
                         </button>
                     );
                 })}

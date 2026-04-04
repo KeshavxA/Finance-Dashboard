@@ -1,5 +1,6 @@
 import { Wallet, TrendingUp, TrendingDown } from 'lucide-react';
-import { formatCurrency } from '../../utils/helpers';
+import { formatCurrency, TRANSLATIONS } from '../../utils/helpers';
+import useStore from '../../store/useStore';
 
 function Card({ label, value, icon: Icon, colorClass, bgClass }) {
     return (
@@ -20,6 +21,9 @@ function Card({ label, value, icon: Icon, colorClass, bgClass }) {
 }
 
 export default function SummaryCards({ transactions }) {
+    const language = useStore((s) => s.language);
+    const T = TRANSLATIONS[language] || TRANSLATIONS.en;
+
     const totalIncome = transactions
         .filter((t) => t.type === 'income')
         .reduce((sum, t) => sum + t.amount, 0);
@@ -32,21 +36,21 @@ export default function SummaryCards({ transactions }) {
 
     const cards = [
         {
-            label: 'Total Balance',
+            label: T.balance,
             value: formatCurrency(balance),
             icon: Wallet,
             colorClass: 'bg-indigo-500',
             bgClass: 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800',
         },
         {
-            label: 'Total Income',
+            label: T.income,
             value: formatCurrency(totalIncome),
             icon: TrendingUp,
             colorClass: 'bg-green-500',
             bgClass: 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800',
         },
         {
-            label: 'Total Expenses',
+            label: T.expenses,
             value: formatCurrency(totalExpenses),
             icon: TrendingDown,
             colorClass: 'bg-red-500',

@@ -13,19 +13,18 @@ const useStore = create(
     persist(
         (set) => ({
 
-            // ─── Role ────────────────────────────────────────────────────────────────
             role: 'viewer',
             setRole: (role) => set({ role }),
 
-            // ─── Dark mode ───────────────────────────────────────────────────────────
             darkMode: false,
             toggleDarkMode: () => set((state) => ({ darkMode: !state.darkMode })),
 
-            // ─── Active page ─────────────────────────────────────────────────────────
+            language: 'en',
+            setLanguage: (language) => set({ language }),
+
             activePage: 'dashboard',
             setActivePage: (activePage) => set({ activePage }),
 
-            // ─── Transactions ─────────────────────────────────────────────────────────
             transactions: INITIAL_TRANSACTIONS,
 
             addTransaction: (transaction) =>
@@ -45,7 +44,6 @@ const useStore = create(
                     transactions: state.transactions.filter((txn) => txn.id !== id),
                 })),
 
-            // ─── Filters ──────────────────────────────────────────────────────────────
             filters: { ...DEFAULT_FILTERS },
 
             setFilters: (partial) =>

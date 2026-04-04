@@ -54,3 +54,51 @@ export const CATEGORY_COLORS = {
     Entertainment: '#06b6d4',
     Utilities: '#8b5cf6',
 };
+
+export const TRANSLATIONS = {
+    en: {
+        dashboard: 'Dashboard',
+        transactions: 'Transactions',
+        insights: 'Insights',
+        balance: 'Total Balance',
+        income: 'Total Income',
+        expenses: 'Total Expenses',
+        add: 'Add Transaction',
+        export: 'Export',
+        search: 'Search description...',
+    },
+    hi: {
+        dashboard: 'डैशबोर्ड',
+        transactions: 'लेनदेन',
+        insights: 'इनसाइट्स',
+        balance: 'कुल शेष',
+        income: 'कुल आय',
+        expenses: 'कुल खर्च',
+        add: 'लेनदेन जोड़ें',
+        export: 'निर्यात',
+        search: 'विवरण खोजें...',
+    },
+    es: {
+        dashboard: 'Tablero',
+        transactions: 'Transacciones',
+        insights: 'Perspectivas',
+        balance: 'Balance Total',
+        income: 'Ingresos Totales',
+        expenses: 'Gastos Totales',
+        add: 'Añadir Transacción',
+        export: 'Exportar',
+        search: 'Buscar descripción...',
+    },
+    nl: {
+        dashboard: 'Dashboard',
+        transactions: 'Transacties',
+        insights: 'Inzichten',
+        balance: 'Totaal Saldo',
+        income: 'Totale Inkomsten',
+        expenses: 'Totale Uitgaven',
+        add: 'Transactie Toevoegen',
+        export: 'Exporteren',
+        search: 'Beschrijving zoeken...',
+    },
+};
+
