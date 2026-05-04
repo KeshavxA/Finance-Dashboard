@@ -35,7 +35,6 @@ export default function AddTransactionModal({ onClose, editTx }) {
     const [form, setForm] = useState(BLANK);
     const [errors, setErrors] = useState({});
 
-    // Pre-fill when editing
     useEffect(() => {
         if (editTx) {
             setForm({
@@ -48,7 +47,6 @@ export default function AddTransactionModal({ onClose, editTx }) {
         }
     }, [editTx]);
 
-    // Keep category valid when type changes
     const handleTypeChange = (type) => {
         const validCategories = type === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
         setForm((prev) => ({
@@ -96,14 +94,14 @@ export default function AddTransactionModal({ onClose, editTx }) {
         form.type === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
 
     return (
-        // Backdrop
+      
         <div
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
             onClick={(e) => e.target === e.currentTarget && onClose()}
         >
-            {/* Modal panel */}
+          
             <div className="w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
-                {/* Header */}
+      
                 <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800">
                     <h2 className="text-base font-semibold text-gray-900 dark:text-white">
                         {editTx ? 'Edit Transaction' : 'Add Transaction'}
@@ -117,10 +115,8 @@ export default function AddTransactionModal({ onClose, editTx }) {
                     </button>
                 </div>
 
-                {/* Form */}
                 <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
 
-                    {/* Type toggle */}
                     <div>
                         <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">
                             Type
@@ -147,7 +143,6 @@ export default function AddTransactionModal({ onClose, editTx }) {
                         </div>
                     </div>
 
-                    {/* Description */}
                     <div>
                         <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">
                             Description
@@ -167,7 +162,6 @@ export default function AddTransactionModal({ onClose, editTx }) {
                         )}
                     </div>
 
-                    {/* Amount + Date row */}
                     <div className="grid grid-cols-2 gap-3">
                         <div>
                             <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">
@@ -203,7 +197,6 @@ export default function AddTransactionModal({ onClose, editTx }) {
                         </div>
                     </div>
 
-                    {/* Category */}
                     <div>
                         <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">
                             Category
@@ -219,7 +212,6 @@ export default function AddTransactionModal({ onClose, editTx }) {
                         </select>
                     </div>
 
-                    {/* Footer buttons */}
                     <div className="flex gap-3 pt-1">
                         <button
                             type="button"

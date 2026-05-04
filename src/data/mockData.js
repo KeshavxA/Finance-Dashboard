@@ -1,6 +1,6 @@
 import { subDays, format } from 'date-fns';
 
-// ─── Categories ───────────────────────────────────────────────────────────────
+
 
 export const EXPENSE_CATEGORIES = [
     'Food',
@@ -15,7 +15,6 @@ export const INCOME_CATEGORIES = ['Salary', 'Freelance'];
 
 export const ALL_CATEGORIES = [...INCOME_CATEGORIES, ...EXPENSE_CATEGORIES];
 
-// ─── Colors ───────────────────────────────────────────────────────────────────
 
 export const CATEGORY_COLORS = {
     Food: '#f97316',
@@ -28,7 +27,6 @@ export const CATEGORY_COLORS = {
     Freelance: '#a78bfa',
 };
 
-// ─── Descriptions ─────────────────────────────────────────────────────────────
 
 const DESCRIPTIONS = {
     Food: ['Swiggy order', 'Zomato delivery', 'Grocery run', 'Coffee at Starbucks', 'McDonald\'s lunch', 'Local restaurant dinner'],
@@ -41,7 +39,6 @@ const DESCRIPTIONS = {
     Freelance: ['Client project payment', 'Consulting fee', 'Upwork contract payout'],
 };
 
-// ─── Amount ranges (₹) ───────────────────────────────────────────────────────
 
 const AMOUNT_RANGES = {
     Food: [80, 800],
@@ -54,7 +51,6 @@ const AMOUNT_RANGES = {
     Freelance: [5000, 30000],
 };
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const rand = (min, max) =>
@@ -67,26 +63,25 @@ function createTransaction(date, type, category) {
     return {
         id: `txn_${String(_counter++).padStart(4, '0')}`,
         date: format(date, 'yyyy-MM-dd'),
-        type,                          // 'income' | 'expense'
+        type,                          
         category,
         description: pick(DESCRIPTIONS[category]),
         amount: rand(min, max),
     };
 }
 
-// ─── Generator ────────────────────────────────────────────────────────────────
 
 export function generateTransactions() {
     _counter = 1;
-    const today = new Date(2026, 3, 2); // April 2 2026 — deterministic anchor
+    const today = new Date(2026, 3, 2); 
     const result = [];
 
     for (let day = 0; day < 60; day++) {
         const date = subDays(today, day);
-        const txPerDay = Math.floor(Math.random() * 4) + 1; // 1–4 per day
+        const txPerDay = Math.floor(Math.random() * 4) + 1; 
 
         for (let i = 0; i < txPerDay; i++) {
-            // 20% chance income, 80% expense
+        
             const isIncome = Math.random() < 0.2;
             const type = isIncome ? 'income' : 'expense';
             const category = isIncome
@@ -97,12 +92,10 @@ export function generateTransactions() {
         }
     }
 
-    // Sort descending: newest first
     result.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     return result;
 }
 
-// ─── Pre-generated export ─────────────────────────────────────────────────────
 
 export const INITIAL_TRANSACTIONS = generateTransactions();
