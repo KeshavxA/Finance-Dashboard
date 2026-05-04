@@ -8,6 +8,7 @@ import TransactionFilters from './components/transactions/TransactionFilters';
 import TransactionTable from './components/transactions/TransactionTable';
 import AddTransactionModal from './components/transactions/AddTransactionModal';
 import InsightsSection from './components/insights/InsightsSection';
+import GoalsSection from './components/goals/GoalsSection';
 import { Plus, Download } from 'lucide-react';
 import Papa from 'papaparse';
 import { TRANSLATIONS } from './utils/helpers';
@@ -144,6 +145,11 @@ export default function App() {
       {activePage === 'insights' && (
         <div className="pb-20 md:pb-0">
           <InsightsSection transactions={transactions} />
+        </div>
+      )}
+      {activePage === 'goals' && (
+        <div className="pb-20 md:pb-0">
+          <GoalsSection />
         </div>
       )}
 

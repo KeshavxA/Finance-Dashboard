@@ -30,28 +30,28 @@ export const CATEGORY_COLORS = {
 
 export const TRANSLATIONS = {
     en: {
-        dashboard: 'Dashboard', transactions: 'Transactions', insights: 'Insights',
+        dashboard: 'Dashboard', transactions: 'Transactions', insights: 'Insights', goals: 'Goals',
         balance: 'Total Balance', income: 'Total Income', expenses: 'Total Expenses',
         add: 'Add Transaction', export: 'Export', search: 'Search description...',
         groupBy: 'Group By', none: 'None', date: 'Date', category: 'Category',
         items: 'items', item: 'item'
     },
     hi: {
-        dashboard: 'डैशबोर्ड', transactions: 'लेनदेन', insights: 'इनसाइट्स',
+        dashboard: 'डैशबोर्ड', transactions: 'लेनदेन', insights: 'इनसाइट्स', goals: 'लक्ष्य',
         balance: 'कुल शेष', income: 'कुल आय', expenses: 'कुल खर्च',
         add: 'लेनदेन जोड़ें', export: 'निर्यात', search: 'विवरण खोजें...',
         groupBy: 'समूहबद्ध करें', none: 'कोई नहीं', date: 'तिथि', category: 'श्रेणी',
         items: 'आइटम', item: 'आइटम'
     },
     es: {
-        dashboard: 'Tablero', transactions: 'Transacciones', insights: 'Perspectivas',
+        dashboard: 'Tablero', transactions: 'Transacciones', insights: 'Perspectivas', goals: 'Metas',
         balance: 'Balance Total', income: 'Ingresos Totales', expenses: 'Gastos Totales',
         add: 'Añadir Transacción', export: 'Exportar', search: 'Buscar descripción...',
         groupBy: 'Agrupar por', none: 'Ninguno', date: 'Fecha', category: 'Categoría',
         items: 'elementos', item: 'elemento'
     },
     nl: {
-        dashboard: 'Dashboard', transactions: 'Transacties', insights: 'Inzichten',
+        dashboard: 'Dashboard', transactions: 'Transacties', insights: 'Inzichten', goals: 'Doelen',
         balance: 'Totaal Saldo', income: 'Totale Inkomsten', expenses: 'Totale Uitgaven',
         add: 'Transactie Toevoegen', export: 'Exporteren', search: 'Beschrijving zoeken...',
         groupBy: 'Groeperen op', none: 'Geen', date: 'Datum', category: 'Categorie',

@@ -1,4 +1,4 @@
-import { LayoutDashboard, ArrowLeftRight, Lightbulb } from 'lucide-react';
+import { LayoutDashboard, ArrowLeftRight, Lightbulb, Target } from 'lucide-react';
 import useStore from '../../store/useStore';
 import { TRANSLATIONS } from '../../utils/helpers';
 import logoLight from '../../assets/logo-light.png';
@@ -8,6 +8,7 @@ const NAV_ITEMS = [
     { id: 'dashboard', icon: LayoutDashboard },
     { id: 'transactions', icon: ArrowLeftRight },
     { id: 'insights', icon: Lightbulb },
+    { id: 'goals', icon: Target },
 ];
 
 export default function Sidebar() {

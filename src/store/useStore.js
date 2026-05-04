@@ -45,6 +45,18 @@ const useStore = create(
                     transactions: state.transactions.filter((txn) => txn.id !== id),
                 })),
 
+            goals: [
+                { id: '1', name: 'Emergency Fund', targetAmount: 100000, currentAmount: 45000, color: '#0d9488' },
+                { id: '2', name: 'New MacBook Pro', targetAmount: 250000, currentAmount: 30000, color: '#4f46e5' },
+                { id: '3', name: 'Europe Trip', targetAmount: 500000, currentAmount: 120000, color: '#7c3aed' },
+            ],
+
+            addGoal: (goal) => set((state) => ({ goals: [...state.goals, goal] })),
+            updateGoal: (id, partial) => set((state) => ({
+                goals: state.goals.map(g => g.id === id ? { ...g, ...partial } : g)
+            })),
+            deleteGoal: (id) => set((state) => ({ goals: state.goals.filter(g => g.id !== id) })),
+
             filters: { ...DEFAULT_FILTERS },
 
             setFilters: (partial) =>
