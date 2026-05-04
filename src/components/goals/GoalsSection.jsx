@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Target, Plus, Trash2, Edit2, Calendar, TrendingUp } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import useStore from '../../store/useStore';
 import { formatCurrency } from '../../utils/helpers';
 import { calculateBalanceForecast } from '../../utils/prediction';
@@ -51,55 +52,64 @@ export default function GoalsSection() {
                 </button>
             </div>
 
-            {showAdd && (
-                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm animate-in fade-in slide-in-from-top-4">
-                    <form onSubmit={handleAddGoal} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                        <div className="md:col-span-1">
-                            <label className="block text-xs font-medium text-gray-500 mb-1.5">Goal Name</label>
-                            <input
-                                type="text"
-                                placeholder="e.g. New Car"
-                                className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
-                                value={newGoal.name}
-                                onChange={e => setNewGoal({...newGoal, name: e.target.value})}
-                                required
-                            />
+            <AnimatePresence>
+                {showAdd && (
+                    <motion.div 
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="overflow-hidden"
+                    >
+                        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm mb-6">
+                            <form onSubmit={handleAddGoal} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                                <div className="md:col-span-1">
+                                    <label className="block text-xs font-medium text-gray-500 mb-1.5">Goal Name</label>
+                                    <input
+                                        type="text"
+                                        placeholder="e.g. New Car"
+                                        className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+                                        value={newGoal.name}
+                                        onChange={e => setNewGoal({...newGoal, name: e.target.value})}
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-medium text-gray-500 mb-1.5">Target (₹)</label>
+                                    <input
+                                        type="number"
+                                        placeholder="100000"
+                                        className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+                                        value={newGoal.targetAmount}
+                                        onChange={e => setNewGoal({...newGoal, targetAmount: e.target.value})}
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-medium text-gray-500 mb-1.5">Saved So Far (₹)</label>
+                                    <input
+                                        type="number"
+                                        placeholder="0"
+                                        className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+                                        value={newGoal.currentAmount}
+                                        onChange={e => setNewGoal({...newGoal, currentAmount: e.target.value})}
+                                    />
+                                </div>
+                                <div className="flex gap-2">
+                                    <button type="submit" className="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-xl font-medium hover:bg-indigo-700 transition-colors">
+                                        Save Goal
+                                    </button>
+                                    <button type="button" onClick={() => setShowAdd(false)} className="px-4 py-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                        <div>
-                            <label className="block text-xs font-medium text-gray-500 mb-1.5">Target (₹)</label>
-                            <input
-                                type="number"
-                                placeholder="100000"
-                                className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
-                                value={newGoal.targetAmount}
-                                onChange={e => setNewGoal({...newGoal, targetAmount: e.target.value})}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-gray-500 mb-1.5">Saved So Far (₹)</label>
-                            <input
-                                type="number"
-                                placeholder="0"
-                                className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
-                                value={newGoal.currentAmount}
-                                onChange={e => setNewGoal({...newGoal, currentAmount: e.target.value})}
-                            />
-                        </div>
-                        <div className="flex gap-2">
-                            <button type="submit" className="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-xl font-medium hover:bg-indigo-700 transition-colors">
-                                Save Goal
-                            </button>
-                            <button type="button" onClick={() => setShowAdd(false)} className="px-4 py-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors">
-                                Cancel
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            )}
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {goals.map(goal => {
+                {goals.map((goal, index) => {
                     const remaining = goal.targetAmount - goal.currentAmount;
                     const percent = Math.min(100, Math.max(0, (goal.currentAmount / goal.targetAmount) * 100));
                     const daysRemaining = savingsStats.dailySavings > 0 
@@ -107,7 +117,14 @@ export default function GoalsSection() {
                         : null;
 
                     return (
-                        <div key={goal.id} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl p-6 shadow-sm group hover:shadow-md transition-all">
+                        <motion.div 
+                            key={goal.id} 
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: index * 0.1 }}
+                            whileHover={{ y: -5 }}
+                            className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl p-6 shadow-sm group hover:shadow-md transition-all"
+                        >
                             <div className="flex items-start justify-between mb-6">
                                 <div className="p-3 rounded-2xl" style={{ backgroundColor: `${goal.color}20`, color: goal.color }}>
                                     <Target size={24} />
@@ -156,7 +173,7 @@ export default function GoalsSection() {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </motion.div>
                     );
                 })}
 

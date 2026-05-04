@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import {
     PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer,
 } from 'recharts';
+import { motion } from 'framer-motion';
 import { CATEGORY_COLORS } from '../../utils/helpers';
 
 function CustomTooltip({ active, payload }) {
@@ -45,7 +46,12 @@ export default function SpendingBreakdownChart({ transactions }) {
     }, [transactions]);
 
     return (
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 shadow-sm">
+        <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+            className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 shadow-sm"
+        >
             <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">
                 Spending Breakdown
             </h2>
@@ -82,6 +88,6 @@ export default function SpendingBreakdownChart({ transactions }) {
                     </PieChart>
                 </ResponsiveContainer>
             )}
-        </div>
+        </motion.div>
     );
 }

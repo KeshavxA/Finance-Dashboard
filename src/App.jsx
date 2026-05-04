@@ -10,6 +10,7 @@ import AddTransactionModal from './components/transactions/AddTransactionModal';
 import InsightsSection from './components/insights/InsightsSection';
 import GoalsSection from './components/goals/GoalsSection';
 import { Plus, Download } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Papa from 'papaparse';
 import { TRANSLATIONS } from './utils/helpers';
 
@@ -81,77 +82,87 @@ export default function App() {
 
   return (
     <Layout>
-      {activePage === 'dashboard' && (
-        <div className="space-y-6 pb-20 md:pb-0">
-          <SummaryCards transactions={transactions} />
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activePage}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
+        >
+          {activePage === 'dashboard' && (
+            <div className="space-y-6 pb-20 md:pb-0">
+              <SummaryCards transactions={transactions} />
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <BalanceTrendChart transactions={transactions} />
-            <SpendingBreakdownChart transactions={transactions} />
-          </div>
-        </div>
-      )}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <BalanceTrendChart transactions={transactions} />
+                <SpendingBreakdownChart transactions={transactions} />
+              </div>
+            </div>
+          )}
 
-      {activePage === 'transactions' && (
-        <div className="pb-20 md:pb-0">
-          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm overflow-hidden">
+          {activePage === 'transactions' && (
+            <div className="pb-20 md:pb-0">
+              <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm overflow-hidden">
 
-            <div className="flex items-center justify-between gap-3 flex-wrap px-5 py-4 border-b border-gray-100 dark:border-gray-800">
-              <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100">
-                All Transactions
-              </h2>
-              {role === 'admin' && (
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={exportToCSV}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium transition-colors"
-                  >
-                    <Download size={15} />
-                    {T.export}
-                  </button>
-                  <button
-                    onClick={openAdd}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium transition-colors"
-                  >
-                    <Plus size={15} />
-                    {T.add}
-                  </button>
+                <div className="flex items-center justify-between gap-3 flex-wrap px-5 py-4 border-b border-gray-100 dark:border-gray-800">
+                  <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100">
+                    All Transactions
+                  </h2>
+                  {role === 'admin' && (
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={exportToCSV}
+                        className="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium transition-colors"
+                      >
+                        <Download size={15} />
+                        {T.export}
+                      </button>
+                      <button
+                        onClick={openAdd}
+                        className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium transition-colors"
+                      >
+                        <Plus size={15} />
+                        {T.add}
+                      </button>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
-            <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-800">
-              <TransactionFilters />
-            </div>
+                <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-800">
+                  <TransactionFilters />
+                </div>
 
-            <TransactionTable transactions={filtered} onEdit={openEdit} />
+                <TransactionTable transactions={filtered} onEdit={openEdit} />
 
-            <div className="px-5 py-3 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/40">
-              <p className="text-xs text-gray-400 dark:text-gray-500">
-                Showing{' '}
-                <span className="font-semibold text-gray-600 dark:text-gray-300">
-                  {filtered.length}
-                </span>{' '}
-                of{' '}
-                <span className="font-semibold text-gray-600 dark:text-gray-300">
-                  {transactions.length}
-                </span>{' '}
-                transactions
-              </p>
+                <div className="px-5 py-3 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/40">
+                  <p className="text-xs text-gray-400 dark:text-gray-500">
+                    Showing{' '}
+                    <span className="font-semibold text-gray-600 dark:text-gray-300">
+                      {filtered.length}
+                    </span>{' '}
+                    of{' '}
+                    <span className="font-semibold text-gray-600 dark:text-gray-300">
+                      {transactions.length}
+                    </span>{' '}
+                    transactions
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
-      {activePage === 'insights' && (
-        <div className="pb-20 md:pb-0">
-          <InsightsSection transactions={transactions} />
-        </div>
-      )}
-      {activePage === 'goals' && (
-        <div className="pb-20 md:pb-0">
-          <GoalsSection />
-        </div>
-      )}
+          )}
+          {activePage === 'insights' && (
+            <div className="pb-20 md:pb-0">
+              <InsightsSection transactions={transactions} />
+            </div>
+          )}
+          {activePage === 'goals' && (
+            <div className="pb-20 md:pb-0">
+              <GoalsSection />
+            </div>
+          )}
+        </motion.div>
+      </AnimatePresence>
 
       {showModal && (
         <AddTransactionModal onClose={closeModal} editTx={editTx} />

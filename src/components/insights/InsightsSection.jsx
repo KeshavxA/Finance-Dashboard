@@ -3,18 +3,25 @@ import { subDays, format, parseISO, startOfMonth, addMonths } from 'date-fns';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell
 } from 'recharts';
+import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, PiggyBank, ShoppingBag, Zap } from 'lucide-react';
 import { formatCurrency } from '../../utils/helpers';
 import { calculateBalanceForecast } from '../../utils/prediction';
 
 const TODAY = new Date(2026, 3, 2);
 
-function InsightCard({ icon: Icon, label, value, sub, valueColor = 'text-gray-900 dark:text-white', isSpecial = false }) {
+function InsightCard({ icon: Icon, label, value, sub, valueColor = 'text-gray-900 dark:text-white', isSpecial = false, index }) {
     return (
-        <div className={`
-            bg-white dark:bg-gray-900 border rounded-2xl p-5 shadow-sm flex items-start gap-4 transition-all
-            ${isSpecial ? 'border-indigo-200 dark:border-indigo-900/50 bg-indigo-50/30 dark:bg-indigo-950/10' : 'border-gray-200 dark:border-gray-800'}
-        `}>
+        <motion.div 
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+            whileHover={{ y: -3, scale: 1.01 }}
+            className={`
+                bg-white dark:bg-gray-900 border rounded-2xl p-5 shadow-sm flex items-start gap-4 transition-all
+                ${isSpecial ? 'border-indigo-200 dark:border-indigo-900/50 bg-indigo-50/30 dark:bg-indigo-950/10 shadow-indigo-100/20' : 'border-gray-200 dark:border-gray-800'}
+            `}
+        >
             <div className={`p-3 rounded-xl shrink-0 ${isSpecial ? 'bg-indigo-100 dark:bg-indigo-900/50' : 'bg-gray-100 dark:bg-gray-800'}`}>
                 <Icon size={20} className={isSpecial ? 'text-indigo-600 dark:text-indigo-400' : 'text-indigo-500'} />
             </div>
@@ -23,7 +30,7 @@ function InsightCard({ icon: Icon, label, value, sub, valueColor = 'text-gray-90
                 <p className={`text-xl font-bold truncate ${valueColor}`}>{value}</p>
                 {sub && <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{sub}</p>}
             </div>
-        </div>
+        </motion.div>
     );
 }
 
@@ -133,18 +140,21 @@ export default function InsightsSection({ transactions }) {
         <div className="space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <InsightCard
+                    index={0}
                     icon={ShoppingBag}
                     label="Top Spending Category"
                     value={topCategory[0]}
                     sub={`Total: ${formatCurrency(topCategory[1])}`}
                 />
                 <InsightCard
+                    index={1}
                     icon={TrendingDown}
                     label="Avg Daily Expense (30d)"
                     value={formatCurrency(avgDailyExpense)}
                     sub="Average over the last 30 days"
                 />
                 <InsightCard
+                    index={2}
                     icon={PiggyBank}
                     label="Savings Rate"
                     value={`${savingsRate.toFixed(1)}%`}
@@ -152,6 +162,7 @@ export default function InsightsSection({ transactions }) {
                     valueColor={savingsColor}
                 />
                 <InsightCard
+                    index={3}
                     isSpecial
                     icon={Zap}
                     label={`Forecast for ${nextMonthName}`}
@@ -162,7 +173,12 @@ export default function InsightsSection({ transactions }) {
             </div>
 
             <div className="grid grid-cols-1 gap-6">
-                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 shadow-sm">
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 shadow-sm"
+                >
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                             Monthly Income vs Expenses
@@ -209,7 +225,7 @@ export default function InsightsSection({ transactions }) {
                             </Bar>
                         </BarChart>
                     </ResponsiveContainer>
-                </div>
+                </motion.div>
             </div>
         </div>
     );

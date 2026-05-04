@@ -3,6 +3,7 @@ import { subDays, format, parseISO } from 'date-fns';
 import {
     LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer,
 } from 'recharts';
+import { motion } from 'framer-motion';
 
 const DAYS = 30;
 
@@ -55,7 +56,12 @@ export default function BalanceTrendChart({ transactions }) {
     const tickFormatter = (v) => `₹${(v / 1000).toFixed(0)}k`;
 
     return (
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 shadow-sm">
+        <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4 }}
+            className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 shadow-sm"
+        >
             <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 uppercase tracking-wider text-[10px]">
                 Balance Trend (Last 30 Days)
             </h2>
@@ -89,6 +95,6 @@ export default function BalanceTrendChart({ transactions }) {
                     />
                 </LineChart>
             </ResponsiveContainer>
-        </div>
+        </motion.div>
     );
 }

@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { Pencil, Trash2, ReceiptText } from 'lucide-react';
+import { motion } from 'framer-motion';
 import useStore from '../../store/useStore';
 import { formatCurrency, formatDate, CATEGORY_COLORS, TRANSLATIONS } from '../../utils/helpers';
 
@@ -56,10 +57,28 @@ export default function TransactionTable({ transactions, onEdit }) {
     const T = TRANSLATIONS[language] || TRANSLATIONS.en;
     const groupBy = filters.groupBy || 'none';
 
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.05
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, x: -10 },
+        show: { opacity: 1, x: 0 }
+    };
+
     function TransactionRow({ tx }) {
         const isIncome = tx.type === 'income';
         return (
-            <tr className="hover:bg-gray-50/80 dark:hover:bg-gray-800/60 transition-all duration-200 group">
+            <motion.tr 
+                variants={itemVariants}
+                className="hover:bg-gray-50/80 dark:hover:bg-gray-800/60 transition-all duration-200 group"
+            >
                 <td className="px-5 py-3.5 whitespace-nowrap text-gray-500 dark:text-gray-400 text-xs text-center md:text-left">
                     {formatDate(tx.date)}
                 </td>
@@ -96,7 +115,7 @@ export default function TransactionTable({ transactions, onEdit }) {
                         </div>
                     </td>
                 )}
-            </tr>
+            </motion.tr>
         );
     }
 
@@ -151,9 +170,14 @@ export default function TransactionTable({ transactions, onEdit }) {
                                 )}
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
+                        <motion.tbody 
+                            initial="hidden"
+                            animate="show"
+                            variants={containerVariants}
+                            className="divide-y divide-gray-50 dark:divide-gray-800"
+                        >
                             {renderTableRows()}
-                        </tbody>
+                        </motion.tbody>
                     </table>
                 </div>
             )}

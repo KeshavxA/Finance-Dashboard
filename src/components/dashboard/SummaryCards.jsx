@@ -1,14 +1,21 @@
 import { Wallet, TrendingUp, TrendingDown } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { formatCurrency, TRANSLATIONS } from '../../utils/helpers';
 import useStore from '../../store/useStore';
 
-function Card({ label, value, icon: Icon, colorClass, bgClass }) {
+function Card({ label, value, icon: Icon, colorClass, bgClass, index }) {
     return (
-        <div className={`
-            flex items-center gap-4 rounded-2xl p-5 shadow-sm border 
-            transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 group
-            ${bgClass}
-        `}>
+        <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+            whileHover={{ y: -5, scale: 1.02 }}
+            className={`
+                flex items-center gap-4 rounded-2xl p-5 shadow-sm border 
+                transition-shadow duration-300 hover:shadow-md group
+                ${bgClass}
+            `}
+        >
             <div className={`p-3 rounded-xl shrink-0 transition-transform duration-300 group-hover:scale-110 ${colorClass}`}>
                 <Icon size={22} strokeWidth={2} className="text-white" />
             </div>
@@ -16,7 +23,7 @@ function Card({ label, value, icon: Icon, colorClass, bgClass }) {
                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</p>
                 <p className="text-xl font-bold text-gray-900 dark:text-white truncate">{value}</p>
             </div>
-        </div>
+        </motion.div>
     );
 }
 
@@ -60,8 +67,8 @@ export default function SummaryCards({ transactions }) {
 
     return (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {cards.map((card) => (
-                <Card key={card.label} {...card} />
+            {cards.map((card, index) => (
+                <Card key={card.label} {...card} index={index} />
             ))}
         </div>
     );
