@@ -1,6 +1,8 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useMemo } from 'react';
 import { Pencil, Trash2, ReceiptText } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { FixedSizeList as List } from 'react-window';
+import AutoSizer from 'react-virtualized-auto-sizer';
 import useStore from '../../store/useStore';
 import { formatCurrency, formatDate, CATEGORY_COLORS, TRANSLATIONS } from '../../utils/helpers';
 
@@ -57,71 +59,10 @@ export default function TransactionTable({ transactions, onEdit }) {
     const T = TRANSLATIONS[language] || TRANSLATIONS.en;
     const groupBy = filters.groupBy || 'none';
 
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        show: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.05
-            }
-        }
-    };
-
-    const itemVariants = {
-        hidden: { opacity: 0, x: -10 },
-        show: { opacity: 1, x: 0 }
-    };
-
-    function TransactionRow({ tx }) {
-        const isIncome = tx.type === 'income';
-        return (
-            <motion.tr 
-                variants={itemVariants}
-                className="hover:bg-gray-50/80 dark:hover:bg-gray-800/60 transition-all duration-200 group"
-            >
-                <td className="px-5 py-3.5 whitespace-nowrap text-gray-500 dark:text-gray-400 text-xs text-center md:text-left">
-                    {formatDate(tx.date)}
-                </td>
-                <td className="px-5 py-3.5 text-gray-800 dark:text-gray-200 font-medium max-w-[220px] truncate">
-                    {tx.description}
-                </td>
-                <td className="px-5 py-3.5 whitespace-nowrap">
-                    <CategoryBadge category={tx.category} />
-                </td>
-                <td className="px-5 py-3.5 whitespace-nowrap">
-                    <TypeBadge type={tx.type} />
-                </td>
-                <td className={`px-5 py-3.5 whitespace-nowrap text-right font-semibold ${isIncome
-                    ? 'text-green-600 dark:text-green-400'
-                    : 'text-red-600  dark:text-red-400'
-                    }`}>
-                    {isIncome ? '+' : '−'}{formatCurrency(tx.amount)}
-                </td>
-                {isAdmin && (
-                    <td className="px-5 py-3.5 whitespace-nowrap">
-                        <div className="flex items-center justify-center gap-2">
-                            <button
-                                onClick={() => onEdit(tx)}
-                                className="p-1.5 rounded-lg text-gray-400 hover:text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-950 dark:hover:text-teal-400 transition-colors"
-                            >
-                                <Pencil size={14} />
-                            </button>
-                            <button
-                                onClick={() => deleteTransaction(tx.id)}
-                                className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950 dark:hover:text-red-400 transition-colors"
-                            >
-                                <Trash2 size={14} />
-                            </button>
-                        </div>
-                    </td>
-                )}
-            </motion.tr>
-        );
-    }
-
-    const renderTableRows = () => {
+    // Virtualization Logic: Flatten groups into a single list
+    const virtualItems = useMemo(() => {
         if (groupBy === 'none') {
-            return transactions.map((tx) => <TransactionRow key={tx.id} tx={tx} />);
+            return transactions.map(tx => ({ type: 'row', data: tx }));
         }
 
         const groups = {};
@@ -134,52 +75,95 @@ export default function TransactionTable({ transactions, onEdit }) {
             groups[key].push(tx);
         });
 
-        return Object.entries(groups).map(([groupName, items]) => (
-            <Fragment key={groupName}>
-                <tr className="bg-gray-100/60 dark:bg-gray-800/80">
-                    <td
-                        colSpan={isAdmin ? 6 : 5}
-                        className="px-5 py-2 text-[10px] font-bold uppercase tracking-widest text-teal-600 dark:text-teal-400 text-left border-y border-gray-100 dark:border-gray-800"
-                    >
-                        {groupName} <span className="opacity-40">•</span> {items.length} {items.length === 1 ? T.item : T.items}
-                    </td>
-                </tr>
-                {items.map((tx) => (
-                    <TransactionRow key={tx.id} tx={tx} />
-                ))}
-            </Fragment>
-        ));
+        const flattened = [];
+        Object.entries(groups).forEach(([groupName, items]) => {
+            flattened.push({ type: 'header', label: groupName, count: items.length });
+            items.forEach(tx => {
+                flattened.push({ type: 'row', data: tx });
+            });
+        });
+        return flattened;
+    }, [transactions, groupBy]);
+
+    const Row = ({ index, style }) => {
+        const item = virtualItems[index];
+
+        if (item.type === 'header') {
+            return (
+                <div style={style} className="bg-gray-100/60 dark:bg-gray-800/80 px-5 py-2 flex items-center border-y border-gray-100 dark:border-gray-800 z-10">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-teal-600 dark:text-teal-400">
+                        {item.label} <span className="opacity-40 ml-1">•</span> {item.count} {item.count === 1 ? T.item : T.items}
+                    </span>
+                </div>
+            );
+        }
+
+        const tx = item.data;
+        const isIncome = tx.type === 'income';
+
+        return (
+            <div style={style} className="flex items-center hover:bg-gray-50/80 dark:hover:bg-gray-800/60 transition-all duration-200 border-b border-gray-50 dark:border-gray-800 text-sm group">
+                <div className="w-[15%] px-5 py-3.5 text-gray-500 dark:text-gray-400 text-xs truncate">
+                    {formatDate(tx.date)}
+                </div>
+                <div className="w-[30%] px-5 py-3.5 text-gray-800 dark:text-gray-200 font-medium truncate">
+                    {tx.description}
+                </div>
+                <div className="w-[15%] px-5 py-3.5 truncate">
+                    <CategoryBadge category={tx.category} />
+                </div>
+                <div className="w-[15%] px-5 py-3.5 truncate">
+                    <TypeBadge type={tx.type} />
+                </div>
+                <div className={`w-[15%] px-5 py-3.5 text-right font-semibold ${isIncome ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                    {isIncome ? '+' : '−'}{formatCurrency(tx.amount)}
+                </div>
+                {isAdmin && (
+                    <div className="w-[10%] px-5 py-3.5 flex items-center justify-center gap-2">
+                        <button onClick={() => onEdit(tx)} className="p-1.5 rounded-lg text-gray-400 hover:text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-950 dark:hover:text-teal-400 transition-colors">
+                            <Pencil size={14} />
+                        </button>
+                        <button onClick={() => deleteTransaction(tx.id)} className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950 dark:hover:text-red-400 transition-colors">
+                            <Trash2 size={14} />
+                        </button>
+                    </div>
+                )}
+            </div>
+        );
     };
 
     return (
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm overflow-hidden flex flex-col h-[600px]">
             {transactions.length === 0 ? (
                 <EmptyState />
             ) : (
-                <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                        <thead>
-                            <tr className="border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30">
-                                <th className="text-left px-5 py-3 font-semibold text-gray-400 dark:text-gray-500 whitespace-nowrap uppercase tracking-wider text-[10px]">{T.date.toUpperCase()}</th>
-                                <th className="text-left px-5 py-3 font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider text-[10px]">DESCRIPTION</th>
-                                <th className="text-left px-5 py-3 font-semibold text-gray-400 dark:text-gray-500 whitespace-nowrap uppercase tracking-wider text-[10px]">{T.category.toUpperCase()}</th>
-                                <th className="text-left px-5 py-3 font-semibold text-gray-400 dark:text-gray-500 whitespace-nowrap uppercase tracking-wider text-[10px]">TYPE</th>
-                                <th className="text-right px-5 py-3 font-semibold text-gray-400 dark:text-gray-500 whitespace-nowrap uppercase tracking-wider text-[10px]">AMOUNT</th>
-                                {isAdmin && (
-                                    <th className="text-center px-5 py-3 font-semibold text-gray-400 dark:text-gray-500 whitespace-nowrap uppercase tracking-wider text-[10px]">ACTIONS</th>
-                                )}
-                            </tr>
-                        </thead>
-                        <motion.tbody 
-                            initial="hidden"
-                            animate="show"
-                            variants={containerVariants}
-                            className="divide-y divide-gray-50 dark:divide-gray-800"
-                        >
-                            {renderTableRows()}
-                        </motion.tbody>
-                    </table>
-                </div>
+                <>
+                    {/* Sticky Header */}
+                    <div className="flex items-center border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30 shrink-0 pr-[10px]">
+                        <div className="w-[15%] px-5 py-3 font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider text-[10px]">{T.date.toUpperCase()}</div>
+                        <div className="w-[30%] px-5 py-3 font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider text-[10px]">DESCRIPTION</div>
+                        <div className="w-[15%] px-5 py-3 font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider text-[10px]">{T.category.toUpperCase()}</div>
+                        <div className="w-[15%] px-5 py-3 font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider text-[10px]">TYPE</div>
+                        <div className="w-[15%] px-5 py-3 text-right font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider text-[10px]">AMOUNT</div>
+                        {isAdmin && <div className="w-[10%] px-5 py-3 text-center font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider text-[10px]">ACTIONS</div>}
+                    </div>
+
+                    {/* Virtualized List */}
+                    <div className="flex-1">
+                        <AutoSizer>
+                            {({ height, width }) => (
+                                <List
+                                    height={height}
+                                    itemCount={virtualItems.length}
+                                    itemSize={54}
+                                    width={width}
+                                >
+                                    {Row}
+                                </List>
+                            )}
+                        </AutoSizer>
+                    </div>
+                </>
             )}
         </div>
     );
