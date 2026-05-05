@@ -1,9 +1,12 @@
 import React, { Fragment, useMemo } from 'react';
 import { Pencil, Trash2, ReceiptText } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { FixedSizeList as List } from 'react-window';
-import AutoSizer from 'react-virtualized-auto-sizer';
+import * as ReactWindow from 'react-window';
+import * as AutoSizerModule from 'react-virtualized-auto-sizer';
 import useStore from '../../store/useStore';
+
+const List = ReactWindow.FixedSizeList || ReactWindow.default?.FixedSizeList;
+const AutoSizer = AutoSizerModule.default || AutoSizerModule.AutoSizer;
 import { formatCurrency, formatDate, CATEGORY_COLORS, TRANSLATIONS } from '../../utils/helpers';
 
 function CategoryBadge({ category }) {
