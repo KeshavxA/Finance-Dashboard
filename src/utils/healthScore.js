@@ -21,7 +21,7 @@ export function calculateHealthScore(transactions, goals) {
     else if (savingsRate > 0) savingsScore = 20;
     else savingsScore = 0;
 
-    // 2. Goal Progress (30%)
+    // 2. Goal Consistency (30%)
     let goalScore = 0;
     if (goals && goals.length > 0) {
         const totalProgress = goals.reduce((sum, g) => {
@@ -31,39 +31,35 @@ export function calculateHealthScore(transactions, goals) {
         goalScore = totalProgress / goals.length;
     }
 
-    // 3. Spending Stability (30%)
-    // Compare current month vs previous month
-    const currentMonthKey = format(startOfMonth(TODAY), 'yyyy-MM');
-    const prevMonthKey = format(startOfMonth(subMonths(TODAY, 1)), 'yyyy-MM');
+    // 3. Category Diversification (30%)
+    // Check if spending is too concentrated in one category
+    const categoryTotals = {};
+    transactions
+        .filter(t => t.type === 'expense')
+        .forEach(t => {
+            categoryTotals[t.category] = (categoryTotals[t.category] || 0) + t.amount;
+        });
     
-    let currentMonthSpending = 0;
-    let prevMonthSpending = 0;
+    const expenseCategories = Object.values(categoryTotals);
+    const totalExp = expenseCategories.reduce((s, v) => s + v, 0);
+    const maxCatExp = Math.max(...expenseCategories, 0);
+    const maxCatPercent = totalExp > 0 ? (maxCatExp / totalExp) * 100 : 0;
 
-    transactions.forEach(t => {
-        if (t.type !== 'expense') return;
-        const key = format(startOfMonth(parseISO(t.date)), 'yyyy-MM');
-        if (key === currentMonthKey) currentMonthSpending += t.amount;
-        if (key === prevMonthKey) prevMonthSpending += t.amount;
-    });
-
-    let stabilityScore = 100;
-    if (prevMonthSpending > 0) {
-        const increase = ((currentMonthSpending - prevMonthSpending) / prevMonthSpending) * 100;
-        if (increase > 20) stabilityScore = 40;
-        else if (increase > 10) stabilityScore = 60;
-        else if (increase > 0) stabilityScore = 80;
-        else stabilityScore = 100; // Decreased or stayed same
-    }
+    let diversificationScore = 100;
+    if (maxCatPercent >= 70) diversificationScore = 20;
+    else if (maxCatPercent >= 50) diversificationScore = 50;
+    else if (maxCatPercent >= 35) diversificationScore = 80;
+    else diversificationScore = 100;
 
     // Weighted Final Score
-    const finalScore = (savingsScore * 0.4) + (goalScore * 0.3) + (stabilityScore * 0.3);
+    const finalScore = (savingsScore * 0.4) + (goalScore * 0.3) + (diversificationScore * 0.3);
     
     return {
         score: Math.round(finalScore),
         factors: {
             savings: Math.round(savingsScore),
             goals: Math.round(goalScore),
-            stability: Math.round(stabilityScore)
+            diversification: Math.round(diversificationScore)
         }
     };
 }

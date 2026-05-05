@@ -23,8 +23,8 @@ export default function HealthScoreGauge({ scoreData }) {
                 <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400">Wealth Score</h2>
                 <div className="group relative">
                     <Info size={14} className="text-gray-300 cursor-help" />
-                    <div className="absolute bottom-full right-0 mb-2 w-48 p-2 bg-gray-800 text-white text-[10px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-                        Based on your savings rate, goal progress, and spending stability.
+                    <div className="absolute bottom-full right-0 mb-2 w-48 p-2 bg-gray-800 text-white text-[10px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl">
+                        Based on your savings rate, goal progress, and category diversification.
                     </div>
                 </div>
             </div>
