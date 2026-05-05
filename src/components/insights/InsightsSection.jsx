@@ -7,6 +7,9 @@ import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, PiggyBank, ShoppingBag, Zap } from 'lucide-react';
 import { formatCurrency } from '../../utils/helpers';
 import { calculateBalanceForecast } from '../../utils/prediction';
+import { calculateHealthScore } from '../../utils/healthScore';
+import useStore from '../../store/useStore';
+import AIAdvisor from './AIAdvisor';
 
 const TODAY = new Date(2026, 3, 2);
 
@@ -52,7 +55,9 @@ function CustomTooltip({ active, payload, label }) {
 }
 
 export default function InsightsSection({ transactions }) {
-    const { topCategory, avgDailyExpense, savingsRate, monthlyData, forecast, nextMonthName } = useMemo(() => {
+    const goals = useStore(s => s.goals);
+
+    const { topCategory, avgDailyExpense, savingsRate, monthlyData, forecast, nextMonthName, totalIncome, totalExpenses } = useMemo(() => {
         const categoryTotals = {};
         transactions
             .filter((t) => t.type === 'expense')
@@ -70,12 +75,15 @@ export default function InsightsSection({ transactions }) {
 
         const avgDailyExpense = last30Expenses / 30;
 
-        const totalIncome = transactions.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0);
-        const totalExpenses = transactions.filter((t) => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
-        const currentBalance = totalIncome - totalExpenses;
-        const savingsRate = totalIncome > 0
-            ? ((totalIncome - totalExpenses) / totalIncome) * 100
+        const incomeSum = transactions.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0);
+        const expenseSum = transactions.filter((t) => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+        
+        const currentBalance = incomeSum - expenseSum;
+        const savingsRate = incomeSum > 0
+            ? ((incomeSum - expenseSum) / incomeSum) * 100
             : 0;
+
+        const currentBalanceObj = calculateBalanceForecast(transactions, currentBalance);
 
         const months = Array.from({ length: 4 }, (_, i) => {
             const d = new Date(TODAY.getFullYear(), TODAY.getMonth() - (3 - i), 1);
@@ -103,41 +111,48 @@ export default function InsightsSection({ transactions }) {
         }));
 
         const currentMonthKey = format(startOfMonth(TODAY), 'yyyy-MM');
-
-        // Add Forecast month to chart
         const forecastIncome = transactions
             .filter(t => t.type === 'income' && format(startOfMonth(parseISO(t.date)), 'yyyy-MM') === currentMonthKey)
             .reduce((s, t) => s + t.amount, 0);
         
-        // Simple forecast for next month chart: Current month's income vs (Current month's income - expected savings)
         monthlyData.push({
-            name: nextMonthName.substring(0, 3),
-            Income: Math.round(forecastIncome), // Assume same income for simplicity in chart
-            Expense: Math.round(forecastIncome - forecast.expectedSavings),
+            name: currentBalanceObj.nextMonthName.substring(0, 3),
+            Income: Math.round(forecastIncome),
+            Expense: Math.round(forecastIncome - currentBalanceObj.expectedSavings),
             isForecast: true,
         });
 
-        return { topCategory, avgDailyExpense, savingsRate, monthlyData, forecast, nextMonthName };
+        return { 
+            topCategory, 
+            avgDailyExpense, 
+            savingsRate, 
+            monthlyData, 
+            forecast: currentBalanceObj, 
+            nextMonthName: currentBalanceObj.nextMonthName,
+            totalIncome: incomeSum,
+            totalExpenses: expenseSum
+        };
     }, [transactions]);
+
+    const healthScore = useMemo(() => calculateHealthScore(transactions, goals), [transactions, goals]);
+
+    const userData = {
+        totalIncome,
+        totalExpenses,
+        topCategory: topCategory[0],
+        savingsRate: savingsRate.toFixed(1),
+        goals,
+        healthScore: healthScore.score
+    };
 
     const savingsColor = savingsRate >= 20
         ? 'text-green-600 dark:text-green-400'
         : 'text-red-600 dark:text-red-400';
 
-    if (transactions.length === 0) {
-        return (
-            <div className="flex flex-col items-center justify-center py-24 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl gap-4">
-                <PiggyBank size={48} className="text-gray-200 dark:text-gray-700" />
-                <div className="text-center">
-                    <p className="text-lg font-semibold text-gray-900 dark:text-white">Start your journey!</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Add some transactions to see deep insights.</p>
-                </div>
-            </div>
-        );
-    }
-
     return (
         <div className="space-y-6">
+            <AIAdvisor userData={userData} />
+            
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <InsightCard
                     index={0}
