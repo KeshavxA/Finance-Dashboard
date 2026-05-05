@@ -9,6 +9,8 @@ import TransactionTable from './components/transactions/TransactionTable';
 import AddTransactionModal from './components/transactions/AddTransactionModal';
 import InsightsSection from './components/insights/InsightsSection';
 import GoalsSection from './components/goals/GoalsSection';
+import HealthScoreGauge from './components/dashboard/HealthScoreGauge';
+import { calculateHealthScore } from './utils/healthScore';
 import { Plus, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Papa from 'papaparse';
@@ -20,8 +22,11 @@ export default function App() {
   const filters = useStore((s) => s.filters);
   const role = useStore((s) => s.role);
   const language = useStore((s) => s.language);
+  const goals = useStore((s) => s.goals);
 
   const T = TRANSLATIONS[language] || TRANSLATIONS.en;
+
+  const healthScore = useMemo(() => calculateHealthScore(transactions, goals), [transactions, goals]);
 
   const [showModal, setShowModal] = useState(false);
   const [editTx, setEditTx] = useState(null);
@@ -92,7 +97,14 @@ export default function App() {
         >
           {activePage === 'dashboard' && (
             <div className="space-y-6 pb-20 md:pb-0">
-              <SummaryCards transactions={transactions} />
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <div className="lg:col-span-3">
+                  <SummaryCards transactions={transactions} />
+                </div>
+                <div className="lg:col-span-1">
+                  <HealthScoreGauge scoreData={healthScore} />
+                </div>
+              </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <BalanceTrendChart transactions={transactions} />
